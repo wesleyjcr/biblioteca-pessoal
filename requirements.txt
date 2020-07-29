@@ -1,0 +1,6 @@
+flask
+flask-jwt-extended
+flask-migrate
+flask-sqlalchemy
+Flask-DotEnv
+python-dotenv
