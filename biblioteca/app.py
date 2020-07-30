@@ -1,13 +1,14 @@
 from flask import Flask
+from biblioteca.ext import configuration
 from biblioteca.ext import database
 from biblioteca.ext import auth
 from biblioteca.blueprints import api
 
 
-def create_app():
+def create_app(**config):
     app = Flask(__name__)
 
-    app.config.from_object('config.DevConfig')
+    configuration.init_app(app, **config)
    
     database.init_app(app)
     auth.init_app(app)

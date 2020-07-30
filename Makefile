@@ -5,6 +5,9 @@ install:
 	pip install -r requirements.txt
 	pip install -r requirements_dev.txt
 
+uninstall:
+	pip uninstall -y -r requirements.txt
+	pip uninstall -y -r requirements_dev.txt
 
 build:
 	echo "build"
