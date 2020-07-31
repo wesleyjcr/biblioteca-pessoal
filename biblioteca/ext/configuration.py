@@ -1,4 +1,3 @@
-from dynaconf import FlaskDynaconf
 
-def init_app(app, **config):
-    FlaskDynaconf(app, **config)
+def init_app(app):
+    app.config.from_object('config.DevConfig')
