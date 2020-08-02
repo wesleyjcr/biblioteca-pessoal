@@ -1,68 +1,26 @@
-from flask import Blueprint, jsonify, request
-from datetime import timedelta
-from biblioteca.ext.database import db
-from biblioteca.models import User
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import jwt_required, create_access_token
+from flask import Blueprint, jsonify
+from biblioteca.blueprints.api.author import uai_so
+from biblioteca.blueprints.api.user import login, register, protected
 
 bp = Blueprint('api', __name__, url_prefix='/api/v1')
 
+
 def init_app(app):
-  app.register_blueprint(bp)
+    app.register_blueprint(bp)
 
 
-@bp.route('/test')
-def test():
-    return jsonify({"name":"wesley"})
-
-@bp.route("/login", methods=["GET", "POST"])
-def login():
-    data = request.get_json()
-
-    user = User.query.filter_by(email=data["email"]).first()
-    if not user:
-        return jsonify({"msg": "usuário não existe"})
-
-    if not check_password_hash(user.password, data["password"]):
-        return jsonify({"msg": "Senha incorreta!"})
-
-    payload = {
-        "id": user.id,
-    }
-    access_token = create_access_token(payload, expires_delta=timedelta(minutes=2))
-    return jsonify({"access_token": access_token, "statusCode": 201}), 201
+routes = [
+    ('/uai', 'uai_so', uai_so, ["GET"]),
+    ('/test', 'test', test, ["GET"]),
+    ('/login', 'login', login, ["GET", "POST"]),
+    ('/register', 'register', register, ["POST"]),
+    ('/protected', 'protected', protected, ["GET"])
+]
 
 
-@bp.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-
-    user = User()
-    user.email = data["email"]
-    user.name = data["name"]
-    user.password = generate_password_hash(data["password"])
-
-    db.session.add(user)
-
-    try:
-        db.session.commit()
-        return jsonify({"name": user.name, "email": user.email,}), 201
-    except Exception as error:
-        print(error)
-        return (
-            jsonify(
-                {
-                    "message": "Por algum motivo não conseguimos fazer o cadastro do usuário.",
-                    "statusCode": 500,
-                }
-            ),
-            500,
-        )
-
-
-@bp.route("/protected")
-@jwt_required
-def protected():
-    return "Rota protegida."
-
-
+for route, endpoint, view_func, methods in routes:
+    bp.add_url_rule(
+        route,
+        endpoint,
+        view_func,
+        methods=methods)
