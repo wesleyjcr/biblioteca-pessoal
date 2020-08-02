@@ -1,21 +1,30 @@
 from flask import jsonify, request
 from biblioteca.ext.database import db
-from biblioteca.models import Author
+from biblioteca.models import Books, Author
 from flask_jwt_extended import jwt_required
 
 
 @jwt_required
-def register_author():
+def register_book():
     data = request.get_json()
 
-    author = Author()
-    author.name = data["name"]
+    book = Books()
+    book.title = data["title"]
+    book.author_id = data["author_id"]
+    book.amount = data["amount"]
+    book.cover = data["cover"]
 
-    db.session.add(author)
+    author = Author.query.filter_by(id=data["author_id"]).first()
+
+    db.session.add(book)
 
     try:
         db.session.commit()
-        return jsonify({"name": author.name}), 201
+        return jsonify({
+            "title": book.title,
+            "author": author.name,
+            "amount": book.amount,
+            "cover": book.cover}), 201
     except Exception as error:
         print(error)
         return (

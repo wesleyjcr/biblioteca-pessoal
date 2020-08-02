@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify
-from biblioteca.blueprints.api.author import uai_so
+from flask import Blueprint
+from biblioteca.blueprints.api.author import register_author
 from biblioteca.blueprints.api.user import login, register, protected
+from biblioteca.blueprints.api.books import register_book
 
 bp = Blueprint('api', __name__, url_prefix='/api/v1')
 
@@ -10,11 +11,11 @@ def init_app(app):
 
 
 routes = [
-    ('/uai', 'uai_so', uai_so, ["GET"]),
-    ('/test', 'test', test, ["GET"]),
     ('/login', 'login', login, ["GET", "POST"]),
     ('/register', 'register', register, ["POST"]),
-    ('/protected', 'protected', protected, ["GET"])
+    ('/protected', 'protected', protected, ["GET"]),
+    ('/register_author', 'register_author', register_author, ["POST"]),
+    ('/register_book', 'register_book', register_book, ["POST"])
 ]
 
 
