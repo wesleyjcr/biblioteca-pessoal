@@ -10,11 +10,10 @@ def login():
     data = request.get_json()
 
     user = User.query.filter_by(email=data["email"]).first()
-    if not user:
-        return jsonify({"msg": "usuário não existe"})
-
-    if not check_password_hash(user.password, data["password"]):
-        return jsonify({"msg": "Senha incorreta!"})
+    if not user or not check_password_hash(user.password, data["password"]):
+        return jsonify(
+            {"msg": "Ops, algo deu errado! Verifique os dados informados"}
+        )
 
     payload = {
         "id": user.id,

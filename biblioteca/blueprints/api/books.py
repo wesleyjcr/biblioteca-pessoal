@@ -36,3 +36,19 @@ def register_book():
             ),
             500,
         )
+
+
+@jwt_required
+def get_all_books():
+    books = Books.query.all()
+    data = []
+    for book in books:
+        author = Author.query.filter_by(id=book.author_id).first()
+        data.append({
+            "id": book.id,
+            "author": author.name,
+            "amount": book.amount,
+            "cover": book.cover,
+            "title": book.title
+        })
+    return jsonify(list_books=data)

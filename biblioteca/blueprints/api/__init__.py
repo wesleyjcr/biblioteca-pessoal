@@ -1,7 +1,7 @@
 from flask import Blueprint
 from biblioteca.blueprints.api.author import register_author
 from biblioteca.blueprints.api.user import login, register, protected
-from biblioteca.blueprints.api.books import register_book
+from biblioteca.blueprints.api.books import register_book, get_all_books
 
 bp = Blueprint('api', __name__, url_prefix='/api/v1')
 
@@ -15,7 +15,8 @@ routes = [
     ('/register', 'register', register, ["POST"]),
     ('/protected', 'protected', protected, ["GET"]),
     ('/register_author', 'register_author', register_author, ["POST"]),
-    ('/register_book', 'register_book', register_book, ["POST"])
+    ('/register_book', 'register_book', register_book, ["POST"]),
+    ('/get_all_books', 'get_all_books', get_all_books, ["GET"])
 ]
 
 
